@@ -8,6 +8,7 @@
  ============================================================================
  */
 //sudo apt-get install libx11-dev <<<<<<<<<<
+//sudo apt install libqt4-dev
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
