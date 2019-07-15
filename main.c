@@ -12,7 +12,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-#include<math.h>
+#include <math.h>
 
 const double PI25DT = 3.141592653589793238462643;
 
@@ -53,9 +53,9 @@ int main(void) {
 	//fd = open("test.txt","rw+");/////file
 	//fd=open("tabsin.tab", O_APPEND );
 	int nomt, noms, pnm, notab;
-	char numer[2];
+	char numer[2], msg2[16];
 	numer[1]=0;
-	int    battw, batth;// xlast, ylast,tmp,tmp2,
+	int   tmp,tmp2, battw, batth;// xlast, ylast,
 	Display *d;
 	Window w, w2;
 	XEvent e;
@@ -225,45 +225,45 @@ int main(void) {
 			fclose(file);
 
 			for (px=120; px<240; px++)
-						{
-							XDrawPoint (d, w2, DefaultGC( d, s ), px +15, 250 - (sin( ((px) * 2 * PI25DT)/500) * 250) );
-							if ( ( px - (int)( (int)(px/5)*5)) == 0)
-											{
-												numer[0]='\n';
+			{
+				XDrawPoint (d, w2, DefaultGC( d, s ), px +25, 250 - (sin( ((px) * 2 * PI25DT)/500) * 250) );
+				if ( ( px - (int)( (int)(px/5)*5)) == 0)
+				{
+				numer[0]='\n';
 												//fwrite(&numer, 1 , 1, file);
-											}
-							nomt=sin( ((px) * 2 * PI25DT)/480) * 0xffff;
-							noms=0;
-							notab = 0;
-							for (pnm=100000; pnm > 0; pnm=pnm/10)
-							{
-								while ( nomt >= pnm )
-								{
-									nomt = nomt - pnm;
-									noms++;
-								}
-								if (notab != 0)
-								{
-									numer[0]=noms + '0';
-								}
-								else
-								{
-									if (noms != 0)
-									{
-										notab = 1;
-										numer[0]=noms + '0';
-									}
-									else
-									{
-										numer[0]=' ';
-									}
-								}
+				}
+				nomt=sin( ((px) * 2 * PI25DT)/480) * 0xffff;
+				noms=0;
+				notab = 0;
+				for (pnm=100000; pnm > 0; pnm=pnm/10)
+				{
+					while ( nomt >= pnm )
+					{
+						nomt = nomt - pnm;
+						noms++;
+					}
+					if (notab != 0)
+					{
+						numer[0]=noms + '0';
+					}
+					else
+					{
+						if (noms != 0)
+						{
+							notab = 1;
+							numer[0]=noms + '0';
+						}
+						else
+						{
+							numer[0]=' ';
+						}
+					}
 								//write (fd, &numer,1 );
 								//printf ("%i\t",noms);
 								//fwrite(&numer[0], 1, 1, file);
 								printf ("%s",&numer[0]);
 								noms=0;
-							}
+				}
 							numer[0]=',';
 							printf ("%s\n",&numer);
 							//fwrite(&numer, 1 , 1, file);
@@ -271,26 +271,32 @@ int main(void) {
 							//write (fd, ',',1 );
 
 
-						}
+			}
 
 		}
 		if( e.type == KeyPress ) // При нажатии кнопки - выход
 		{
-
-			//XDrawString( d, w, DefaultGC( d, s ), 70,70, &e.xkey.keycode, strlen (&e.xkey.keycode) );
+			XClearArea (d, w, 100, 0, 180, 20, True );
+			//XDrawString( d, w, DefaultGC( d, s ), 100,16, &e.xkey.keycode, strlen (&e.xkey.keycode) );
 			XClearArea (d, w, 0, 0, 80, 20, True );
+			XClearArea (d, w2, 0, 0, 80, 20, True );
 			//XDrawString( d, w, DefaultGC( d, s ), 70,70, " ", 1 );
+			XDrawString( d, w2, DefaultGC( d, s ), 0,16, XKeysymToString (XKeycodeToKeysym (d, e.xkey.keycode, (e.xkey.state & 0x00000001) )),strlen (XKeysymToString (XKeycodeToKeysym (d, e.xkey.keycode, (e.xkey.state & 0x00000001) )))  );
+
 			XDrawString( d, w, DefaultGC( d, s ), 0,16, XKeysymToString (XKeycodeToKeysym (d, e.xkey.keycode, (e.xkey.state & 0x00000001) )),strlen (XKeysymToString (XKeycodeToKeysym (d, e.xkey.keycode, (e.xkey.state & 0x00000001) )))  );
+
 ///			//tmp=XKeycodeToKeysym (d, e.xkey.keycode, 0 );//
 			//;
 			//puts (tmp);
 			if (e.xkey.keycode == 9 ) break;
 
 			//printf ("---%i\n",e.xkey.keycode);
-			//tmp2=numtostr(tmp, &msg2);
+			numtostr(e.xkey.keycode, &msg2);
 			//printf ("---%s\n--%i",msg2, strlen(msg2));
-			//XDrawString( d, w, DefaultGC( d, s ), 150,52, msg2, strlen(msg2) );
-
+			XDrawString( d, w, DefaultGC( d, s ), 150,16, msg2, strlen(msg2) );
+			numtostr(e.xkey.state, &msg2);
+			XDrawString( d, w, DefaultGC( d, s ), 100,8, msg2, strlen(msg2) );			
+ 
 
 		}
 		/*if( e.type == ButtonPress )
