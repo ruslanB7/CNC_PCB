@@ -62,8 +62,8 @@ int main(void) {
 	XEvent e;
 
 	//XSetWindowAttributes winatr;
-	battw = 915;
-	batth = 715;
+	battw = 610;
+	batth = 360;
 	//tmp2=0;
 	//char *msg = "Hello, World!";
 	//char msg2[200];
@@ -78,9 +78,9 @@ int main(void) {
 	w = XCreateSimpleWindow( d, RootWindow( d, s ),     // Создать окно
 			0, 0, 800, 400, 0,
 			BlackPixel( d, s ), WhitePixel( d, s ) );
-
+XSetWMName(d, w, "CNC_PCB");
 	w2 = XCreateSimpleWindow( d, w,     // Создать окно в окні
-			30, 30, battw, batth, 0,
+			10, 30, battw, batth, 0,
 			BlackPixel( d, s ), WhitePixel( d, s ) );
 	XSelectInput( d, w2, ExposureMask | ButtonPressMask | ButtonReleaseMask  );  // На какие события будем реагировать?2222222
 	XSelectInput( d, w, ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | Button1MotionMask| KeymapStateMask );  // На какие события будем реагировать?| ResizeRedirectMask
