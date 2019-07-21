@@ -5,12 +5,16 @@
 ************************/
 
 
-uint8_t img_stat, nc_stat;
-uint32_t img_x, img_y, img_dpi_x, img_dpi_y;
+#include <stdio.h>
 
-uint8_t num_format; // 0x32 >>> 002.27
+#include "bmp2nc.h"
 
-int32_t offset_x, offset_y;    /// zero point in image
+int img_stat, nc_stat;
+int img_x, img_y, img_dpi_x, img_dpi_y;
+
+char num_format; // 0x32 >>> 002.27
+
+int offset_x, offset_y;    /// zero point in image
 
 char img_fl[256], nc_fl[256], tmp_img_fl[256], tmp_nc_fl[256];
 char n_nc[256], tmp_n1_nc[256], tmp_n2_nc[256], tmp_n3_nc[256], tmp_n4_nc[256];
@@ -32,20 +36,72 @@ int init_system (void)
 }
 
 
-int open_img ( char *imgfl)
+int open_img ( char *imgfl, imgdmp *img)
 {
+  long unsigned int s_x, s_y, offset_bm, sz_px, px, py, tmcol, rdcol, pnf;
+  unsigned char bf, bf2[2], bf4[4];
+  FILE *fld;
+  fld = fopen(imgfl,"rb");
+  if ( !fld )
+  {
+  	return -1;
+  }  
+  fseek ( fld, 0, SEEK_SET); // SEEK_SET _CUR _END
+  fread(bf2, 2, 1, fld);
+  if ( (bf2[0] != 0x42) || (bf2[1] != 0x4d) )
+  {
+  	return -2;
+  }
+
+  fseek (fld, 0x12, SEEK_SET);
+  fread (bf4, 4, 1, fld);
+  s_x=bf4[0] + bf4[1]*256 + bf4[2]*0x010000 + bf4[3]*0x01000000;
+  img->x=s_x;
+
+  fseek (fld, 0x16, SEEK_SET);
+  fread (bf4, 4, 1, fld);
+  s_y=bf4[0] + bf4[1]*0x0100 + bf4[2]*0x010000 + bf4[3]*0x01000000;
+  img->y=s_y;
+
+  fseek (fld, 0x1c, SEEK_SET);
+  fread (bf2, 2, 1, fld);
+  sz_px=bf2[0] + bf2[1]*0x0100;
+
+  fseek (fld, 0x0a, SEEK_SET);
+  fread (bf4, 4, 1, fld);
+  offset_bm=bf4[0] + bf4[1]*0x0100 + bf4[2]*0x010000 + bf4[3]*0x01000000;
+//printf ( "read \t %d \t %d \t %d \n", offset_bm, s_x, s_y);
+
+  fseek(fld, offset_bm, SEEK_SET);
+  fread (bf4, 4, 1, fld);
+  tmcol=bf4[0] + bf4[1]*0x0100 + bf4[2]*0x010000 + bf4[3]*0x01000000;
+
+  fseek(fld, offset_bm, SEEK_SET);
+  for (py=0; py<s_y; py++)
+  {
+  	for (px=0; px<s_x; px++)
+    {
+ 		fread (bf4, 4, 1, fld);
+ 		rdcol=bf4[0] + bf4[1]*0x0100 + bf4[2]*0x010000 + bf4[3]*0x01000000;
+ 		if (rdcol == tmcol)
+ 		{
+ 			img->pnt[px + py * s_x]=1;
+ 		}
+ 		else
+ 		{
+ 			img->pnt[px + py * s_x]=2;
+ 		}
+ 		//pnf=  px + py * s_x;//ftell (fld);
+
+ 		//printf ( "read \t %d \t %d \t %d \n", pnf, px, py);
+
+    }
+  }
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  fclose (fld);
+
+  return 0;
+
 }
 
 
@@ -87,3 +143,8 @@ int mk_bs_nc ( void )
 }
 
 
+int found_line (imgdmp *img)
+{
+	unsigned int prx, pry, tmprx, tmpry;
+	//for 
+}

@@ -27,7 +27,7 @@ const double PI25DT = 3.141592653589793238462643;
 
 #include <X11/cursorfont.h> /* определяет XC_watch и т.п. */
 /* эта переменная содержит дескриптор создаваемого курсора */
-
+#include "bmp2nc.h"
 
 int ret, bufa;
 double  px;
@@ -48,22 +48,30 @@ int main(void) {
 	//////////////////////////////////////////////////////////////////////////
 
 
+	imgdmp imgr; ///flrdstr
+
 	int fd; ////file
 	FILE *file;
 	/////////////////////file = fopen("./tabsin.tab", "wb");
 	//fd = open("test.txt","rw+");/////file
 	//fd=open("tabsin.tab", O_APPEND );
 	int nomt, noms, pnm, notab;
+	long unsigned int kimg, mkimg, ximg, yimg, drvy, drvx, imgis;
+	long unsigned int offsetx_max, offsetx, offsety_max, offsety;
 	char numer[2], msg2[16];
 	numer[1]=0;
-	int   tmp,tmp2, battw, batth;// xlast, ylast,
+	int   tmp,tmp2, battw, batth, bk;// xlast, ylast,
 	Display *d;
 	Window w, w2;
 	XEvent e;
+//////////for color 
+	GC gc;			/* GC (graphics context) used for drawing    */
+    XGCValues gcval;
+
 
 	//XSetWindowAttributes winatr;
-	battw = 610;
-	batth = 360;
+	battw = 600;
+	batth = 490;
 	//tmp2=0;
 	//char *msg = "Hello, World!";
 	//char msg2[200];
@@ -76,11 +84,11 @@ int main(void) {
 	}
 	s = DefaultScreen( d );
 	w = XCreateSimpleWindow( d, RootWindow( d, s ),     // Создать окно
-			0, 0, 800, 400, 0,
+			0, 0, 1000, 500, 0,
 			BlackPixel( d, s ), WhitePixel( d, s ) );
-XSetWMName(d, w, "CNC_PCB");
+//XSetWMName(d, w, "CNC_PCB");
 	w2 = XCreateSimpleWindow( d, w,     // Создать окно в окні
-			10, 30, battw, batth, 0,
+			5, 5, battw, batth, 0,
 			BlackPixel( d, s ), WhitePixel( d, s ) );
 	XSelectInput( d, w2, ExposureMask | ButtonPressMask | ButtonReleaseMask  );  // На какие события будем реагировать?2222222
 	XSelectInput( d, w, ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | Button1MotionMask| KeymapStateMask );  // На какие события будем реагировать?| ResizeRedirectMask
@@ -96,13 +104,20 @@ XSetWMName(d, w, "CNC_PCB");
 	XSetWMProtocols(d, w , &wm_delete_window, 1);
 
 	/////////////////////////////////////
-	XStoreName (d,w,"My new window");
+	XStoreName (d,w,"CNC_PCB");
 //////////////////////////////////////////////////////////////////
 	/* создаем курсор "песочные часы" */
 	p1_cursor = XCreateFontCursor(d, XC_pencil);//XC_watch
 	p2_cursor = XCreateFontCursor(d, XC_hand2);
 	p3_cursor = XCreateFontCursor(d, XC_hand1);
 	p4_cursor = XCreateFontCursor(d, XC_watch);
+//////////////////////////colors
+	
+	gcval.foreground=0; 
+	gc=XCreateGC (d, RootWindow (d, s), GCForeground, &gcval);
+	gcval.foreground=0;
+	XChangeGC (d, gc, GCForeground, &gcval);
+ 	
 
 
 
@@ -132,8 +147,17 @@ XSetWMName(d, w, "CNC_PCB");
 	        ////////////////////////////////////////////
 
 
-
-
+	bk=open_img("img.bmp", &imgr);
+	//printf ("openimg %d", bk);
+	if ( (imgr.x/battw) > (imgr.y/batth) )
+	{
+		mkimg=imgr.x/(battw-4) + 1;
+	}
+	else
+	{
+		mkimg=imgr.y/(batth-4) + 1;
+	}
+	kimg=mkimg;
 	// Бесконечный цикл обработки событий
 	while( 1 )
 	{
@@ -159,144 +183,231 @@ XSetWMName(d, w, "CNC_PCB");
 	    	//  }
 	    	//  t++;
 
-			//XDrawLine (d, w2, DefaultGC( d, s ), 0, 0, battw-1, 0);
-			//XDrawLine (d, w2, DefaultGC( d, s ), 0, batth-1, battw-1, batth-1);
-			//XDrawLine (d, w2, DefaultGC( d, s ), battw-1, 0, battw-1, batth-1);
-			//XDrawLine (d, w2, DefaultGC( d, s ), 0, 0, 0, batth-1);
+			XDrawLine (d, w2, DefaultGC( d, s ), 0, 0, battw-1, 0);
+			XDrawLine (d, w2, DefaultGC( d, s ), 0, batth-1, battw-1, batth-1);
+			XDrawLine (d, w2, DefaultGC( d, s ), battw-1, 0, battw-1, batth-1);
+			XDrawLine (d, w2, DefaultGC( d, s ), 0, 0, 0, batth-1);
 
-			XDrawLine (d, w2, DefaultGC( d, s ), 10, 0, 10, 300);
-			XDrawLine (d, w2, DefaultGC( d, s ), 10, 250, 500, 250);
+			///////XDrawLine (d, w2, DefaultGC( d, s ), 10, 0, 10, 300);
+			///////XDrawLine (d, w2, DefaultGC( d, s ), 10, 250, 500, 250);
 			//XDrawLine (d, w2, DefaultGC( d, s ), 150, 712, 150, 400);
 			//XDrawLine (d, w2, DefaultGC( d, s ), 10, 200, 150, 200);
 			//XDrawLine (d, w2, DefaultGC( d, s ), 150, 708, 150, 400);
 			//XDrawLine (d, w2, DefaultGC( d, s ), 10, 0, 12, 5);
 			//XDrawLine (d, w2, DefaultGC( d, s ), 10, 0, 8, 5);
 
-
-
-			file = fopen("./tabsin.tab", "wb");
-			for (px=0; px<121; px++)
+			//XDrawLine (d, w2, DefaultGC( d, s ), 0, 0, 0, 300);
+			//imgr.x=1000;
+			//imgr.y=1000;
+			if (imgis < 1)
 			{
-				XDrawPoint (d, w2, DefaultGC( d, s ), px +11, 250 - (sin( ((px) * 2 * PI25DT)/500) * 250) );
-				if ( ( px - (int)( (int)(px/5)*5)) == 0)
-								{
-									numer[0]='\n';
-									fwrite(&numer, 1 , 1, file);
-								}
-				nomt=sin( ((px) * 2 * PI25DT)/480) * 0xffff;
-				noms=0;
-				notab = 0;
-				for (pnm=100000; pnm > 0; pnm=pnm/10)
+				imgis = 1;
+				if ( (kimg * (battw-4)) > imgr.x )
 				{
-					while ( nomt >= pnm )
-					{
-						nomt = nomt - pnm;
-						noms++;
-					}
-					if (notab != 0)
-					{
-						numer[0]=noms + '0';
-					}
-					else
-					{
-						if (noms != 0)
-						{
-							notab = 1;
-							numer[0]=noms + '0';
-						}
-						else
-						{
-							numer[0]=' ';
-						}
-					}
-					//write (fd, &numer,1 );
-					//printf ("%i\t",noms);
-					fwrite(&numer[0], 1, 1, file);
-					printf ("%s",&numer[0]);
-					noms=0;
+					drvx=imgr.x/kimg+1;
 				}
-				numer[0]=',';
-				printf ("%s\n",&numer);
-				fwrite(&numer, 1 , 1, file);
+				else
+				{
+					drvx=battw-4;
+				}
+				if ( (kimg * (batth-4)) > imgr.y )
+				{
+					drvy=imgr.y/kimg+1;
+				}
+				else
+				{
+					drvy=batth-4;
+				}
 
-				//write (fd, ',',1 );
+				for (yimg=0; yimg < drvy; yimg++)
+				{
+					for (ximg=0; ximg < drvx; ximg++)
+					{
+						
+							//gcval.foreground=0x000000;
+							//XChangeGC (d, gc, GCForeground, &gcval);
+						
+						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 2)
+						{
+							//drvx=ximg/kimg;
+							//drvy=yimg/kimg;
+							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
+						}
+						
+					}
+				}
+
+
 
 
 			}
-			fclose(file);
-
-			for (px=120; px<240; px++)
-			{
-				XDrawPoint (d, w2, DefaultGC( d, s ), px +25, 250 - (sin( ((px) * 2 * PI25DT)/500) * 250) );
-				if ( ( px - (int)( (int)(px/5)*5)) == 0)
-				{
-				numer[0]='\n';
-												//fwrite(&numer, 1 , 1, file);
-				}
-				nomt=sin( ((px) * 2 * PI25DT)/480) * 0xffff;
-				noms=0;
-				notab = 0;
-				for (pnm=100000; pnm > 0; pnm=pnm/10)
-				{
-					while ( nomt >= pnm )
-					{
-						nomt = nomt - pnm;
-						noms++;
-					}
-					if (notab != 0)
-					{
-						numer[0]=noms + '0';
-					}
-					else
-					{
-						if (noms != 0)
-						{
-							notab = 1;
-							numer[0]=noms + '0';
-						}
-						else
-						{
-							numer[0]=' ';
-						}
-					}
-								//write (fd, &numer,1 );
-								//printf ("%i\t",noms);
-								//fwrite(&numer[0], 1, 1, file);
-								printf ("%s",&numer[0]);
-								noms=0;
-				}
-							numer[0]=',';
-							printf ("%s\n",&numer);
-							//fwrite(&numer, 1 , 1, file);
-
-							//write (fd, ',',1 );
+			
 
 
-			}
+			
 
 		}
 		if( e.type == KeyPress ) // При нажатии кнопки - выход
 		{
-			XClearArea (d, w, 100, 0, 180, 20, True );
+			XClearArea (d, w, 610, 0, 990, 50, True );
 			//XDrawString( d, w, DefaultGC( d, s ), 100,16, &e.xkey.keycode, strlen (&e.xkey.keycode) );
-			XClearArea (d, w, 0, 0, 80, 20, True );
-			XClearArea (d, w2, 0, 0, 80, 20, True );
+			//XClearArea (d, w, 1100, 0, 80, 20, True );
+			//XClearArea (d, w2, 0, 0, 80, 20, True );
 			//XDrawString( d, w, DefaultGC( d, s ), 70,70, " ", 1 );
-			XDrawString( d, w2, DefaultGC( d, s ), 0,16, XKeysymToString (XKeycodeToKeysym (d, e.xkey.keycode, (e.xkey.state & 0x00000001) )),strlen (XKeysymToString (XKeycodeToKeysym (d, e.xkey.keycode, (e.xkey.state & 0x00000001) )))  );
+			//XDrawString( d, w2, DefaultGC( d, s ), 0,16, XKeysymToString (XKeycodeToKeysym (d, e.xkey.keycode, (e.xkey.state & 0x00000001) )),strlen (XKeysymToString (XKeycodeToKeysym (d, e.xkey.keycode, (e.xkey.state & 0x00000001) )))  );
 
-			XDrawString( d, w, DefaultGC( d, s ), 0,16, XKeysymToString (XKeycodeToKeysym (d, e.xkey.keycode, (e.xkey.state & 0x00000001) )),strlen (XKeysymToString (XKeycodeToKeysym (d, e.xkey.keycode, (e.xkey.state & 0x00000001) )))  );
-
+			XDrawString( d, w, DefaultGC( d, s ), 610,30, XKeysymToString (XKeycodeToKeysym (d, e.xkey.keycode, (e.xkey.state & 0x00000001) )),strlen (XKeysymToString (XKeycodeToKeysym (d, e.xkey.keycode, (e.xkey.state & 0x00000001) )))  );
+			numtostr(e.xkey.keycode, msg2);
+			//printf ("---%s\n--%i",msg2, strlen(msg2));
+			XDrawString( d, w, DefaultGC( d, s ), 610,20, msg2, strlen(msg2) );
+			numtostr(e.xkey.state, msg2);
+			XDrawString( d, w, DefaultGC( d, s ), 610,10, msg2, strlen(msg2) );	
 ///			//tmp=XKeycodeToKeysym (d, e.xkey.keycode, 0 );//
 			//;
 			//puts (tmp);
 			if (e.xkey.keycode == 9 ) break;
 
+
+			if (e.xkey.keycode == 20)
+			{
+				if ( kimg < mkimg)
+				{
+					kimg++;
+					if ( (imgr.x/kimg) > (battw-4) )
+					{
+						offsetx_max=(imgr.x / kimg) - (battw-4);
+					}
+					else
+					{
+						offsetx_max=0;
+					}
+					if ( (imgr.y/kimg) > (batth-4) )
+					{
+						offsety_max=(imgr.y / kimg) - (batth-4);
+					}
+					else
+					{
+						offsety_max=0;
+					}
+					if ( offsetx > offsetx_max)
+					{
+						offsetx=offsetx_max;
+					}
+					if ( offsety > offsety_max)
+					{
+						offsety=offsety_max;
+					}
+				}
+				XClearArea (d, w2, 1, 1, battw-2, batth-2, True );
+				imgis=0;
+			}
+			if (e.xkey.keycode == 21)
+			{
+				if ( kimg > 1)
+				{
+					kimg--;
+					if ( (imgr.x/kimg) > (battw-4) )
+					{
+						offsetx_max=(imgr.x / kimg) - (battw-4);
+					}
+					else
+					{
+						offsetx_max=0;
+					}
+					if ( (imgr.y/kimg) > (batth-4) )
+					{
+						offsety_max=(imgr.y / kimg) - (batth-4);
+					}
+					else
+					{
+						offsety_max=0;
+					}
+					if ( offsetx > offsetx_max)
+					{
+						offsetx=offsetx_max;
+					}
+					if ( offsety > offsety_max)
+					{
+						offsety=offsety_max;
+					}
+					
+				}
+				XClearArea (d, w2, 1, 1, battw-2, batth-2, True );
+				imgis=0;
+			}
+
+			if (e.xkey.keycode == 116)
+			{
+				if (offsety < offsety_max)
+				{
+					if ( (offsety+10) <= offsety_max)
+					{
+						offsety+=10;
+					}
+					else
+					{
+						offsety++;
+					}
+				}
+				XClearArea (d, w2, 1, 1, battw-2, batth-2, True );
+				imgis=0;
+				//printf("%d \t %d\n", offsety_max, offsety);
+			}
+			if (e.xkey.keycode == 111)
+			{
+				if (offsety > 0)
+				{
+					if ( offsety >= 10)
+					{
+						offsety-=10;
+					}
+					else
+					{
+						offsety--;
+					}
+				}
+				XClearArea (d, w2, 1, 1, battw-2, batth-2, True );
+				imgis=0;
+				//printf("%d \t %d\n", offsety_max, offsety);
+			}
+
+			if (e.xkey.keycode == 114)
+			{
+				if (offsetx < offsetx_max)
+				{
+					if ( (offsetx+10) <= offsetx_max)
+					{
+						offsetx+=10;
+					}
+					else
+					{
+						offsetx++;
+					}
+				}
+				XClearArea (d, w2, 1, 1, battw-2, batth-2, True );
+				imgis=0;
+				//printf("%d \t %d\n", offsetx_max, offsetx);
+			}
+			if (e.xkey.keycode == 113)
+			{
+				if (offsetx > 0)
+				{
+					if ( offsetx >= 10)
+					{
+						offsetx-=10;
+					}
+					else
+					{
+						offsetx--;
+					}
+				}
+				XClearArea (d, w2, 1, 1, battw-2, batth-2, True );
+				imgis=0;
+				//printf("%d \t %d\n", offsetx_max, offsetx);
+			}
+			///////////////////////////////////////////////
 			//printf ("---%i\n",e.xkey.keycode);
-			numtostr(e.xkey.keycode, &msg2);
-			//printf ("---%s\n--%i",msg2, strlen(msg2));
-			XDrawString( d, w, DefaultGC( d, s ), 150,16, msg2, strlen(msg2) );
-			numtostr(e.xkey.state, &msg2);
-			XDrawString( d, w, DefaultGC( d, s ), 100,8, msg2, strlen(msg2) );			
+					
  
 
 		}
