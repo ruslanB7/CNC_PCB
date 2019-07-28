@@ -190,7 +190,9 @@ int main(void) {
 
 			///////XDrawLine (d, w2, DefaultGC( d, s ), 10, 0, 10, 300);
 			///////XDrawLine (d, w2, DefaultGC( d, s ), 10, 250, 500, 250);
-			//XDrawLine (d, w2, DefaultGC( d, s ), 150, 712, 150, 400);
+			//gcval.foreground=0xffff00;
+			//XChangeGC (d, gc, GCForeground, &gcval);
+			//XDrawLine (d, w2, gc, 120, 50, 150, 400);
 			//XDrawLine (d, w2, DefaultGC( d, s ), 10, 200, 150, 200);
 			//XDrawLine (d, w2, DefaultGC( d, s ), 150, 708, 150, 400);
 			//XDrawLine (d, w2, DefaultGC( d, s ), 10, 0, 12, 5);
@@ -229,11 +231,53 @@ int main(void) {
 						
 						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 2)
 						{
-							//drvx=ximg/kimg;
-							//drvy=yimg/kimg;
+							gcval.foreground=0x7f7f7f;
+							XChangeGC (d, gc, GCForeground, &gcval);
 							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
 						}
-						
+						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 3)
+						{
+							gcval.foreground=0x005fff;
+							XChangeGC (d, gc, GCForeground, &gcval);
+							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
+						}
+						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 4)
+						{
+							gcval.foreground=0x305fff;
+							XChangeGC (d, gc, GCForeground, &gcval);
+							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
+						}
+						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 5)
+						{
+							gcval.foreground=0x505fff;
+							XChangeGC (d, gc, GCForeground, &gcval);
+							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
+						}
+						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 6)
+						{
+							gcval.foreground=0x705fff;
+							XChangeGC (d, gc, GCForeground, &gcval);
+							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
+						}
+						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 7)
+						{
+							gcval.foreground=0xa05fff;
+							XChangeGC (d, gc, GCForeground, &gcval);
+							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
+						}
+						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 8)
+						{
+							gcval.foreground=0xc05fff;
+							XChangeGC (d, gc, GCForeground, &gcval);
+							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
+						}
+						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 9)
+						{
+							gcval.foreground=0xff0000;
+							XChangeGC (d, gc, GCForeground, &gcval);
+							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
+						}
+
 					}
 				}
 
@@ -336,7 +380,7 @@ int main(void) {
 				imgis=0;
 			}
 
-			if (e.xkey.keycode == 116)
+			if (e.xkey.keycode == 111)
 			{
 				if (offsety < offsety_max)
 				{
@@ -353,7 +397,7 @@ int main(void) {
 				imgis=0;
 				//printf("%d \t %d\n", offsety_max, offsety);
 			}
-			if (e.xkey.keycode == 111)
+			if (e.xkey.keycode == 116)
 			{
 				if (offsety > 0)
 				{
@@ -401,6 +445,13 @@ int main(void) {
 						offsetx--;
 					}
 				}
+				XClearArea (d, w2, 1, 1, battw-2, batth-2, True );
+				imgis=0;
+				//printf("%d \t %d\n", offsetx_max, offsetx);
+			}
+			if (e.xkey.keycode == 32)
+			{
+				found_line (&imgr);
 				XClearArea (d, w2, 1, 1, battw-2, batth-2, True );
 				imgis=0;
 				//printf("%d \t %d\n", offsetx_max, offsetx);

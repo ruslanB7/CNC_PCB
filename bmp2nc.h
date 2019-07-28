@@ -13,3 +13,6 @@ typedef struct
 } imgdmp;
 
 //int open_img ( char *imgfl, imgdmp *img);
+
+int open_img ( char *imgfl, imgdmp *img);
+int found_line (imgdmp *img);
