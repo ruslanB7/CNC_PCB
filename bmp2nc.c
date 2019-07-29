@@ -147,7 +147,7 @@ int found_line (imgdmp *img)
 {
 	volatile unsigned int prx, pry, tmprx, tmpry;
 	volatile unsigned char setfind;
-	for (setfind=2; setfind < 10; setfind++)
+	for (setfind=2; setfind < 5; setfind++)
 	{
 		for (pry=1; pry < (img->y -2); pry++)
 		{
@@ -158,92 +158,92 @@ int found_line (imgdmp *img)
 					
 					if ( img->pnt[prx-1+(pry * img->x)] == setfind )
 					{
-						if ( img->pnt[prx+1+(pry*img->x)] != 1  )
-						{
-							img->pnt[prx+pry*img->x] = 9;
-						}
-						else
-						{
+						////if ( img->pnt[prx+1+(pry*img->x)] != 1  )
+						//{
+						//	img->pnt[prx+pry*img->x] = 9;
+						////}
+						///else
+						//{
 							img->pnt[prx+pry*img->x] = setfind+1;
-						}
+						//}
 					}
-					else if ( img->pnt[prx+1+pry*img->x] == setfind )
+					if ( img->pnt[prx+1+pry*img->x] == setfind )
 					{
-						if ( img->pnt[prx-1+(pry*img->x)] != 1  )
-						{
-							img->pnt[prx+pry*img->x] = 9;
-						}
-						else
+						//if ( img->pnt[prx-1+(pry*img->x)] != 1  )
+						//{
+						//	img->pnt[prx+pry*img->x] = 9;
+						//}
+						//else
 
-						{
+						//{
 							img->pnt[prx+pry*img->x] = setfind+1;
-						}
+						//}
 					}
-					else if ( img->pnt[prx-1+((pry-1)*img->x)] == setfind )
+					//else if ( img->pnt[prx-1+((pry-1)*img->x)] == setfind )
+					//{
+						//if ( img->pnt[prx+1+((pry+1)*img->x)] == setfind )
+						//{
+						//	img->pnt[prx+pry*img->x] = 9;
+						//}
+						//else
+						//{
+					//		img->pnt[prx+pry*img->x] = setfind+1;
+						//}
+					//}
+					//else if ( img->pnt[prx+((pry-1)*img->x)] == setfind )
+					//{
+						//if ( img->pnt[prx+((pry+1)*img->x)] == setfind )
+						//{
+						//	img->pnt[prx+pry*img->x] = 9;
+						//}
+						//else
+						//{
+					//		img->pnt[prx+pry*img->x] = setfind+1;
+						//}
+					//}
+					//else if ( img->pnt[prx+1+((pry-1)*img->x)] == setfind )
+					//{
+						//if ( img->pnt[prx-1+((pry+1)*img->x)] == setfind )
+						//{
+						//	img->pnt[prx+pry*img->x] = 9;
+						//}
+						//else
+						//{
+					//		img->pnt[prx+pry*img->x] = setfind+1;
+						//}
+					//}
+					//if ( img->pnt[prx-1+((pry+1)*img->x)] == setfind )
+					//{
+						//if ( img->pnt[prx+1+((pry-1)*img->x)] == setfind )
+						//{
+						//	img->pnt[prx+pry*img->x] = 9;
+						///}
+						//else
+						//{
+					//		img->pnt[prx+pry*img->x] = setfind+1;
+						//}
+					//}
+					if ( img->pnt[prx+((pry+1)*img->x)] == setfind )
 					{
-						if ( img->pnt[prx+1+((pry+1)*img->x)] == setfind )
-						{
-							img->pnt[prx+pry*img->x] = 9;
-						}
-						else
-						{
+						//if ( img->pnt[prx+((pry-1)*img->x)] == setfind )
+						//{
+						//	img->pnt[prx+pry*img->x] = 9;
+						//}
+						//else
+						//{
 							img->pnt[prx+pry*img->x] = setfind+1;
-						}
+						//}
 					}
-					else if ( img->pnt[prx+((pry-1)*img->x)] == setfind )
+					if ( img->pnt[prx+((pry-1)*img->x)] == setfind )
 					{
-						if ( img->pnt[prx+((pry+1)*img->x)] == setfind )
-						{
-							img->pnt[prx+pry*img->x] = 9;
-						}
-						else
-						{
+						//if ( img->pnt[prx-1+((pry-1)*img->x)] == setfind )
+						//{
+						//	img->pnt[prx+pry*img->x] = 9;
+						//}
+						//else
+						//{
 							img->pnt[prx+pry*img->x] = setfind+1;
-						}
-					}
-					else if ( img->pnt[prx+1+((pry-1)*img->x)] == setfind )
-					{
-						if ( img->pnt[prx-1+((pry+1)*img->x)] == setfind )
-						{
-							img->pnt[prx+pry*img->x] = 9;
-						}
-						else
-						{
-							img->pnt[prx+pry*img->x] = setfind+1;
-						}
-					}
-					else if ( img->pnt[prx-1+((pry+1)*img->x)] == setfind )
-					{
-						if ( img->pnt[prx+1+((pry-1)*img->x)] == setfind )
-						{
-							img->pnt[prx+pry*img->x] = 9;
-						}
-						else
-						{
-							img->pnt[prx+pry*img->x] = setfind+1;
-						}
-					}
-					else if ( img->pnt[prx+((pry+1)*img->x)] == setfind )
-					{
-						if ( img->pnt[prx+((pry-1)*img->x)] == setfind )
-						{
-							img->pnt[prx+pry*img->x] = 9;
-						}
-						else
-						{
-							img->pnt[prx+pry*img->x] = setfind+1;
-						}
-					}
-					else if ( img->pnt[prx+1+((pry+1)*img->x)] == setfind )
-					{
-						if ( img->pnt[prx-1+((pry-1)*img->x)] == setfind )
-						{
-							img->pnt[prx+pry*img->x] = 9;
-						}
-						else
-						{
-							img->pnt[prx+pry*img->x] = setfind+1;
-						}
+						//}
 					}
 				}
 			}
@@ -254,13 +254,9 @@ int found_line (imgdmp *img)
 		{
 			for (prx=1; prx < (img->x -2); prx++)
 			{
-				if (img->pnt[prx+pry*img->x] == setfind - 1)
+				if (img->pnt[prx+pry*img->x] == 1)
 				{
-					
-					if (( img->pnt[prx-1+(pry * img->x)] != setfind ) && ( img->pnt[prx+1+pry*img->x] != setfind ) && ( img->pnt[prx-1+((pry-1)*img->x)] != setfind ) && ( img->pnt[prx+((pry-1)*img->x)] != setfind ) && ( img->pnt[prx+1+((pry-1)*img->x)] != setfind ) && ( img->pnt[prx-1+((pry+1)*img->x)] != setfind ) && ( img->pnt[prx+((pry+1)*img->x)] != setfind ) && ( img->pnt[prx+1+((pry+1)*img->x)] != setfind ) )
-					{
-						//img->pnt[prx+pry*img->x] = setfind;
-					}
+					img->pnt[prx+pry*img->x] = 9;
 				}
 			}
 		}

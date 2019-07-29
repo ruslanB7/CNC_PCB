@@ -231,31 +231,31 @@ int main(void) {
 						
 						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 2)
 						{
-							gcval.foreground=0x7f7f7f;
+							gcval.foreground=0xafafaf;
 							XChangeGC (d, gc, GCForeground, &gcval);
 							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
 						}
 						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 3)
 						{
-							gcval.foreground=0x005fff;
+							gcval.foreground=0x00ff5f;
 							XChangeGC (d, gc, GCForeground, &gcval);
 							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
 						}
 						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 4)
 						{
-							gcval.foreground=0x305fff;
+							gcval.foreground=0x00ff3f;
 							XChangeGC (d, gc, GCForeground, &gcval);
 							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
 						}
 						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 5)
 						{
-							gcval.foreground=0x505fff;
+							gcval.foreground=0x00ff1f;
 							XChangeGC (d, gc, GCForeground, &gcval);
 							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
 						}
 						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 6)
 						{
-							gcval.foreground=0x705fff;
+							gcval.foreground=0x0;
 							XChangeGC (d, gc, GCForeground, &gcval);
 							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
 						}
@@ -273,7 +273,7 @@ int main(void) {
 						}
 						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 9)
 						{
-							gcval.foreground=0xff0000;
+							gcval.foreground=0x000000;
 							XChangeGC (d, gc, GCForeground, &gcval);
 							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
 						}
