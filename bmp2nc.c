@@ -19,8 +19,9 @@ int offset_x, offset_y;    /// zero point in image
 char img_fl[256], nc_fl[256], tmp_img_fl[256], tmp_nc_fl[256];
 char n_nc[256], tmp_n1_nc[256], tmp_n2_nc[256], tmp_n3_nc[256], tmp_n4_nc[256];
 
-
-
+#define zup 0.5
+#define zgo -0.1
+#define zupp 1.0
 
 int init_system (void)
 {
@@ -133,20 +134,120 @@ int open_tmp_fl ( void )
   
 }
 
-int mk_bs_nc ( void )
+int mk_bs_nc ( imgdmp *img )
 {
+  	unsigned int prx, pry, gx, gy, gz, gst;
+  	float gkx, gky, gkz;
+  	FILE *fld;
+  	fld = fopen("out.nc","w");
+  	fprintf (fld,"%s\r\n", "G90");
+  	fprintf (fld,"%s\r\n", "S1000");
+  	fprintf (fld,"%s\r\n", "F100");
+  	fprintf (fld,"%s\r\n", "M03");
+  	gst=0;
+  	for (pry=1; pry < (img->y -2); pry+=2)
+		{
+			for (prx=1; prx < (img->x -2); prx++)
+			{
+				if ((img->pnt[prx+pry*img->x] == 9) && (img->pnt[prx+(pry + 1 )*img->x] == 9))
+				{
+					if (gst == 0)
+					{
+						gkx=prx*0.0254;
+						gky=pry*0.0254;
+						fprintf (fld, "%s%4.4f%s%4.4f\r\n", "G00 X ", gkx, " Y ", gky);
+						fprintf (fld, "%s\r\n", "G00 Z0.000 " );
+						fprintf (fld, "%s%4.4f\r\n", "G01 Z ", zgo );
+						gst =1;
+					}
+					else
+					{
+
+					}
+					img->pnt[prx+pry*img->x] = 0x0a;
+					img->pnt[prx+(pry + 1 )*img->x] = 0x0a;
+					
+				}
+				else if ((img->pnt[prx+pry*img->x] != 9) && (img->pnt[prx+(pry + 1 )*img->x] == 9))
+				{
+					if (gst == 0)
+					{
+						gkx=prx*0.0254;
+						gky=pry*0.0254;
+						fprintf (fld, "%s%4.4f%s%4.4f\r\n", "G00 X ", gkx, " Y ", gky);
+						fprintf (fld, "%s\r\n", "G00 Z0.000 " );
+						fprintf (fld, "%s%4.4f\r\n", "G01 Z ", zgo );
+						gst =1;
+					}
+					else
+					{
+
+					}
+					img->pnt[prx+pry*img->x] = 0x0a;
+					img->pnt[prx+(pry + 1 )*img->x] = 0x0a;
+				}
+				else if ((img->pnt[prx+(pry - 1 )*img->x] != 0xa) && (img->pnt[prx+pry*img->x] == 9))
+				{
+					if (gst == 0)
+					{
+						gkx=prx*0.0254;
+						gky=pry*0.0254;
+						fprintf (fld, "%s%4.4f%s%4.4f\r\n", "G00 X ", gkx, " Y ", gky);
+						fprintf (fld, "%s\r\n", "G00 Z0.000 " );
+						fprintf (fld, "%s%4.4f\r\n", "G01 Z ", zgo );
+						gst =1;
+					}
+					else
+					{
+
+					}
+					img->pnt[prx+pry*img->x] = 0x0a;
+					img->pnt[prx+(pry + 1 )*img->x] = 0x0a;
+				}
+				else 
+				{
+					if (gst == 0)
+					{
+
+					}
+					else
+					{
+						gkx=prx*0.0254;
+						gky=pry*0.0254;
+						fprintf (fld, "%s%4.4f%s%4.4f\r\n", "G01 X ", gkx, " Y ", gky);
+						fprintf (fld, "%s%4.4f\r\n", "G00 Z ", zup );
+						gst =0;
+					}
+					
+				}
+			}
+
+			if (gst == 0)
+			{
+			}
+			else
+			{
+				gkx=prx*0.0254;
+				gky=pry*0.0254;
+				fprintf (fld, "%s%4.4f%s%4.4f\r\n", "G01 X ", gkx, " Y ", gky);
+				fprintf (fld, "%s%f\r\n", "G00 Z ", zupp );
+				gst =0;
+			}
+		}
+
+		fprintf (fld,"%s\r\n", "M05");
+  		fprintf (fld,"%s\r\n", "G00 X0.000 Y100.000");
+  		fprintf (fld,"%s\r\n", "M02");
   
-  
-  
-  
+	fclose (fld);
   
 }
 
 
 int found_line (imgdmp *img)
 {
-	volatile unsigned int prx, pry, tmprx, tmpry;
-	volatile unsigned char setfind;
+	unsigned int prx, pry, tmprx, tmpry;
+	unsigned char setfind;
 	for (setfind=2; setfind < 5; setfind++)
 	{
 		for (pry=1; pry < (img->y -2); pry++)

@@ -277,6 +277,18 @@ int main(void) {
 							XChangeGC (d, gc, GCForeground, &gcval);
 							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
 						}
+						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 0xa)
+						{
+							gcval.foreground=0xff0000;
+							XChangeGC (d, gc, GCForeground, &gcval);
+							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
+						}
+						if (imgr.pnt[ (ximg + offsetx) * kimg + (yimg + offsety) * imgr.x * kimg] == 0xb)
+						{
+							gcval.foreground=0xff00f0;
+							XChangeGC (d, gc, GCForeground, &gcval);
+							XDrawPoint(d, w2, gc, ximg +2,  batth - 2 -yimg);
+						}
 
 					}
 				}
@@ -456,6 +468,14 @@ int main(void) {
 				imgis=0;
 				//printf("%d \t %d\n", offsetx_max, offsetx);
 			}
+			if (e.xkey.keycode == 33)
+			{
+				mk_bs_nc (&imgr);
+				XClearArea (d, w2, 1, 1, battw-2, batth-2, True );
+				imgis=0;
+				//printf("%d \t %d\n", offsetx_max, offsetx);
+			}
+			
 			///////////////////////////////////////////////
 			//printf ("---%i\n",e.xkey.keycode);
 					
