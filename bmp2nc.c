@@ -20,8 +20,11 @@ char img_fl[256], nc_fl[256], tmp_img_fl[256], tmp_nc_fl[256];
 char n_nc[256], tmp_n1_nc[256], tmp_n2_nc[256], tmp_n3_nc[256], tmp_n4_nc[256];
 
 #define zup 0.5
-#define zgo -0.1
+#define zgo -0.07
 #define zupp 0.2
+#define fdo "F100"
+#define fgo "F250"
+
 
 int init_system (void)
 {
@@ -179,23 +182,23 @@ int mk_bs_nc ( imgdmp *img )
 				
 				if ( pry > 2)
 				{
-					if ( (img->pnt[prx+pry*img->x] > 8 ) &&(img->pnt[prx+(pry-1)*img->x] > 8 ) &&(img->pnt[prx+(pry-2)*img->x] > 8 ) && (img->pnt[prx+(pry+1)*img->x] > 8 ) && (img->pnt[prx+(pry+2)*img->x] > 8 ) )
+					if ( (img->pnt[prx+pry*img->x] == 9 ) &&(img->pnt[prx+(pry-1)*img->x] > 8) &&(img->pnt[prx+(pry-2)*img->x] > 8 ) && (img->pnt[prx+(pry+1)*img->x] == 9 ) && (img->pnt[prx+(pry+2)*img->x] == 9 ) )
 					{
 						gky=pry*0.0254;
 					}
-					else if ( (img->pnt[prx+pry*img->x] > 8 ) &&(img->pnt[prx+(pry-1)*img->x] > 8 )  && (img->pnt[prx+(pry+1)*img->x] > 8 ) && (img->pnt[prx+(pry+2)*img->x] > 8 ) && (img->pnt[prx+(pry+3)*img->x] < 8 ) &&  (img->pnt[prx+(pry-2)*img->x] < 8 ))
+					else if ( (img->pnt[prx+pry*img->x] == 9 ) &&(img->pnt[prx+(pry-1)*img->x] == 9 )  && (img->pnt[prx+(pry+1)*img->x] == 9 ) && (img->pnt[prx+(pry+2)*img->x] == 9 ) && (img->pnt[prx+(pry+3)*img->x] < 8 ) &&  (img->pnt[prx+(pry-2)*img->x] < 8 ))
 					{
 						gky=pry*0.0254 + 0.0127;
 					}
-						else if ( (img->pnt[prx+pry*img->x] > 8 ) &&(img->pnt[prx+(pry-1)*img->x] > 8 )  && (img->pnt[prx+(pry+1)*img->x] > 8 )  && (img->pnt[prx+(pry+2)*img->x] < 8 ) &&  (img->pnt[prx+(pry-2)*img->x] < 8 )  )
+						else if ( (img->pnt[prx+pry*img->x] == 9 ) &&(img->pnt[prx+(pry-1)*img->x] == 9 )  && (img->pnt[prx+(pry+1)*img->x] == 9 )  && (img->pnt[prx+(pry+2)*img->x] < 8 ) &&  (img->pnt[prx+(pry-2)*img->x] < 8 )  )
 					{
 						gky=pry*0.0254;
 					}
-					else if ( (img->pnt[prx+pry*img->x] > 8 )  && (img->pnt[prx+(pry+1)*img->x] > 8 )  && (img->pnt[prx+(pry+2)*img->x] < 8 ) &&  (img->pnt[prx+(pry-1)*img->x] < 8 ) )
+					else if ( (img->pnt[prx+pry*img->x] == 9 )  && (img->pnt[prx+(pry+1)*img->x] == 9 )  && (img->pnt[prx+(pry+2)*img->x] < 8 ) &&  (img->pnt[prx+(pry-1)*img->x] < 8 ) )
 					{
 						gky=pry*0.0254 + 0.0127;
 					}
-					else if ( (img->pnt[prx+pry*img->x] > 8 )  &&  (img->pnt[prx+(pry+1)*img->x] < 8 )  &&  (img->pnt[prx+(pry-1)*img->x] < 8 ) )
+					else if ( (img->pnt[prx+pry*img->x] == 9 )  &&  (img->pnt[prx+(pry+1)*img->x] < 8 )  &&  (img->pnt[prx+(pry-1)*img->x] < 8 ) )
 					{
 						gky=pry*0.0254;
 					}
@@ -245,7 +248,7 @@ int mk_bs_nc ( imgdmp *img )
 					{
 						fprintf (fld, "%s%4.4f%s%4.4f\r\n", "G00 X ", gkx, " Y ", gky);
 						fprintf (fld, "%s\r\n", "G00 Z0.000 " );
-						fprintf (fld, "%s%4.4f\r\n", "G01 Z ", zgo );
+						fprintf (fld, "%s%4.4f %s\r\n", "G01 Z ", zgo, fdo );
 						t_gky = gky;
 						t_gkx = gkx;
 						gst = 1;
@@ -263,8 +266,8 @@ int mk_bs_nc ( imgdmp *img )
 
 						if (t_gky != gky)
 						{
-							fprintf (fld, "%s%4.4f\r\n", "G01 X ", gkx);
-							fprintf (fld, "%s%4.4f\r\n", "G01 Y ", gky);
+							fprintf (fld, "%s%4.4f %s\r\n", "G01 X ", gkx, fgo );
+							fprintf (fld, "%s%4.4f %s\r\n", "G01 Y ", gky, fgo );
 							gst =gky;
 						}
 						t_gky = gky;
@@ -274,7 +277,7 @@ int mk_bs_nc ( imgdmp *img )
 					}
 					else
 					{
-						fprintf (fld, "%s%4.4f%s%4.4f\r\n", "G01 X ", t_gkx, " Y ", t_gky);
+						fprintf (fld, "%s%4.4f%s%4.4f %s\r\n", "G01 X ", t_gkx, " Y ", t_gky, fgo );
 						fprintf (fld, "%s%f\r\n", "G00 Z ", zupp );
 						gst =0;
 					}
@@ -290,7 +293,7 @@ int mk_bs_nc ( imgdmp *img )
 			{
 				//gkx=prx*0.0254;
 				//gky=pry*0.0254;
-				fprintf (fld, "%s%4.4f%s%4.4f\r\n", "G01 X ", t_gkx, " Y ", t_gky);
+				fprintf (fld, "%s%4.4f%s%4.4f %s\r\n", "G01 X ", t_gkx, " Y ", t_gky, fgo );
 				fprintf (fld, "%s%f\r\n", "G00 Z ", zupp );
 				gst =0;
 			}
