@@ -475,7 +475,14 @@ int main(void) {
 				imgis=0;
 				//printf("%d \t %d\n", offsetx_max, offsetx);
 			}
-			
+			if (e.xkey.keycode == 31)
+			{
+				invert (&imgr);
+				XClearArea (d, w2, 1, 1, battw-2, batth-2, True );
+				imgis=0;
+				//printf("%d \t %d\n", offsetx_max, offsetx);
+			}
+			//invert
 			///////////////////////////////////////////////
 			//printf ("---%i\n",e.xkey.keycode);
 					

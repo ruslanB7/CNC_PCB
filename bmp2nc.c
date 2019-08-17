@@ -21,7 +21,7 @@ char n_nc[256], tmp_n1_nc[256], tmp_n2_nc[256], tmp_n3_nc[256], tmp_n4_nc[256];
 
 #define zup 0.5
 #define zgo -0.1
-#define zupp 1.0
+#define zupp 0.2
 
 int init_system (void)
 {
@@ -133,11 +133,31 @@ int open_tmp_fl ( void )
   
   
 }
+int invert ( imgdmp *img )
+{
+	int prx, pry;
+	for (pry=1; pry < (img->y -2); pry++)
+		{
+			for (prx=1; prx < (img->x -2); prx++)
+			{
+				if (img->pnt[prx+pry*img->x] == 1)
+				{
+					img->pnt[prx+pry*img->x]=2;
+				}
+				else
+				{
+					img->pnt[prx+pry*img->x]=1;
+				}
+			}
 
+		}
+
+
+}
 int mk_bs_nc ( imgdmp *img )
 {
-  	unsigned int prx, pry, gx, gy, gz, gst;
-  	float gkx, gky, gkz;
+  	int prx, pry, gx, gy, gz, gst;
+  	float gkx, gky, gkz, t_gky, t_gkx, mx, my;
   	FILE *fld;
   	fld = fopen("out.nc","w");
   	fprintf (fld,"%s\r\n", "G90");
@@ -145,11 +165,148 @@ int mk_bs_nc ( imgdmp *img )
   	fprintf (fld,"%s\r\n", "F100");
   	fprintf (fld,"%s\r\n", "M03");
   	gst=0;
-  	for (pry=1; pry < (img->y -2); pry+=2)
+  	gkx=0;
+  	gky=0;
+  	t_gky=0;
+  	t_gkx=0;
+  	mx=0;
+  	my=0;
+
+  	for (pry=1; pry < (img->y -2); pry++)
 		{
 			for (prx=1; prx < (img->x -2); prx++)
 			{
-				if ((img->pnt[prx+pry*img->x] == 9) && (img->pnt[prx+(pry + 1 )*img->x] == 9))
+				
+				if ( pry > 2)
+				{
+					if ( (img->pnt[prx+pry*img->x] > 8 ) &&(img->pnt[prx+(pry-1)*img->x] > 8 ) &&(img->pnt[prx+(pry-2)*img->x] > 8 ) && (img->pnt[prx+(pry+1)*img->x] > 8 ) && (img->pnt[prx+(pry+2)*img->x] > 8 ) )
+					{
+						gky=pry*0.0254;
+					}
+					else if ( (img->pnt[prx+pry*img->x] > 8 ) &&(img->pnt[prx+(pry-1)*img->x] > 8 )  && (img->pnt[prx+(pry+1)*img->x] > 8 ) && (img->pnt[prx+(pry+2)*img->x] > 8 ) && (img->pnt[prx+(pry+3)*img->x] < 8 ) &&  (img->pnt[prx+(pry-2)*img->x] < 8 ))
+					{
+						gky=pry*0.0254 + 0.0127;
+					}
+						else if ( (img->pnt[prx+pry*img->x] > 8 ) &&(img->pnt[prx+(pry-1)*img->x] > 8 )  && (img->pnt[prx+(pry+1)*img->x] > 8 )  && (img->pnt[prx+(pry+2)*img->x] < 8 ) &&  (img->pnt[prx+(pry-2)*img->x] < 8 )  )
+					{
+						gky=pry*0.0254;
+					}
+					else if ( (img->pnt[prx+pry*img->x] > 8 )  && (img->pnt[prx+(pry+1)*img->x] > 8 )  && (img->pnt[prx+(pry+2)*img->x] < 8 ) &&  (img->pnt[prx+(pry-1)*img->x] < 8 ) )
+					{
+						gky=pry*0.0254 + 0.0127;
+					}
+					else if ( (img->pnt[prx+pry*img->x] > 8 )  &&  (img->pnt[prx+(pry+1)*img->x] < 8 )  &&  (img->pnt[prx+(pry-1)*img->x] < 8 ) )
+					{
+						gky=pry*0.0254;
+					}
+					else
+					{
+						gky=0;
+					}
+				}
+				if ( prx > 2)
+				{
+					if ( (img->pnt[prx+pry*img->x] > 8 ) &&(img->pnt[prx-1+pry*img->x] > 8 ) &&(img->pnt[prx-2+pry*img->x] > 8 ) && (img->pnt[prx+1+pry*img->x] > 8 ) && (img->pnt[prx+2+pry*img->x] > 8 ) )
+					{
+						gkx=prx*0.0254;
+					}
+					else if ( (img->pnt[prx+pry*img->x] > 8 ) &&(img->pnt[prx-1+pry*img->x] > 8 )  && (img->pnt[prx+1+pry*img->x] > 8 ) && (img->pnt[prx+2+pry*img->x] > 8 ) && (img->pnt[prx+3+pry*img->x] < 8 ) &&  (img->pnt[prx-2+pry*img->x] < 8 ) )
+					{
+						gkx=prx*0.0254 + 0.0127;
+					}
+					else if ( (img->pnt[prx+pry*img->x] > 8 ) &&(img->pnt[prx-1+pry*img->x] > 8 )  && (img->pnt[prx+1+pry*img->x] > 8 )  && (img->pnt[prx+2+pry*img->x] < 8 ) &&  (img->pnt[prx-2+pry*img->x] < 8 ) )
+					{
+						gkx=prx*0.0254;
+					}
+					else if ( (img->pnt[prx+pry*img->x] > 8 )  && (img->pnt[prx+1+pry*img->x] > 8 )  && (img->pnt[prx+2+pry*img->x] < 8 ) &&  (img->pnt[prx-1+pry*img->x] < 8 ) )
+					{
+						gkx=prx*0.0254 + 0.0127;
+					}
+					else if ( (img->pnt[prx+pry*img->x] > 8 )  &&  (img->pnt[prx+1+pry*img->x] < 8 ) &&  (img->pnt[prx-1+pry*img->x] < 8 ) )
+					{
+						gkx=prx*0.0254;
+					}
+					else
+					{
+						gkx=0;
+					}
+				}
+				if (gkx > mx) 
+				{
+					mx = gkx;
+				}
+				if (gky > my) 
+				{
+					my = gky;
+				}
+				if (gst == 0)
+				{	
+					if ( (gkx != 0) && (gky !=0) )
+					{
+						fprintf (fld, "%s%4.4f%s%4.4f\r\n", "G00 X ", gkx, " Y ", gky);
+						fprintf (fld, "%s\r\n", "G00 Z0.000 " );
+						fprintf (fld, "%s%4.4f\r\n", "G01 Z ", zgo );
+						t_gky = gky;
+						t_gkx = gkx;
+						gst = 1;
+						img->pnt[prx+pry*img->x] = 0x0a;
+					}
+					else
+					{
+
+					}
+				}
+				else
+				{
+					if ( (gkx != 0) && (gky !=0) )
+					{
+
+						if (t_gky != gky)
+						{
+							fprintf (fld, "%s%4.4f\r\n", "G01 X ", gkx);
+							fprintf (fld, "%s%4.4f\r\n", "G01 Y ", gky);
+							gst =gky;
+						}
+						t_gky = gky;
+						t_gkx = gkx;
+						img->pnt[prx+pry*img->x] = 0x0a;
+
+					}
+					else
+					{
+						fprintf (fld, "%s%4.4f%s%4.4f\r\n", "G01 X ", t_gkx, " Y ", t_gky);
+						fprintf (fld, "%s%f\r\n", "G00 Z ", zupp );
+						gst =0;
+					}
+				}
+
+				
+			}
+
+			if (gst == 0)
+			{
+			}
+			else
+			{
+				//gkx=prx*0.0254;
+				//gky=pry*0.0254;
+				fprintf (fld, "%s%4.4f%s%4.4f\r\n", "G01 X ", t_gkx, " Y ", t_gky);
+				fprintf (fld, "%s%f\r\n", "G00 Z ", zupp );
+				gst =0;
+			}
+		}
+
+		fprintf (fld,"%s\r\n", "M05");
+  		//fprintf (fld,"%s\r\n", "G00 X0.000 Y100.000");
+  		fprintf (fld, "%s%4.4f%s%4.4f\r\n", "G00 X ", mx, " Y ", my);
+  		fprintf (fld,"%s\r\n", "M02");
+  
+	fclose (fld);
+  
+}
+/*
+
+if ((img->pnt[prx+pry*img->x] == 9) && (img->pnt[prx+(pry + 1 )*img->x] == 9))
 				{
 					if (gst == 0)
 					{
@@ -220,29 +377,8 @@ int mk_bs_nc ( imgdmp *img )
 					}
 					
 				}
-			}
 
-			if (gst == 0)
-			{
-			}
-			else
-			{
-				gkx=prx*0.0254;
-				gky=pry*0.0254;
-				fprintf (fld, "%s%4.4f%s%4.4f\r\n", "G01 X ", gkx, " Y ", gky);
-				fprintf (fld, "%s%f\r\n", "G00 Z ", zupp );
-				gst =0;
-			}
-		}
-
-		fprintf (fld,"%s\r\n", "M05");
-  		fprintf (fld,"%s\r\n", "G00 X0.000 Y100.000");
-  		fprintf (fld,"%s\r\n", "M02");
-  
-	fclose (fld);
-  
-}
-
+*/
 
 int found_line (imgdmp *img)
 {
